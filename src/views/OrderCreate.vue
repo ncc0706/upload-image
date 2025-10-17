@@ -11,96 +11,110 @@
         <div class="form-card">
           <h2 class="section-title">订单信息</h2>
 
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label">站点编码</label>
-              <input
-                  v-model="siteCode"
-                  class="form-input"
-                  placeholder="请输入站点编码"
-                  @blur="validateSiteCode"
-              >
-              <div class="validation-message">
-                <span v-if="siteCodeError" class="error-text">{{ siteCodeError }}</span>
-                <span v-else-if="siteCodeValid" class="success-text">✓ 编码有效</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">车牌号</label>
-              <input
-                  v-model="formData.plateNumber"
-                  class="form-input"
-                  placeholder="请输入车牌号"
-              >
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">车牌颜色</label>
-              <input
-                  v-model="formData.plateNumColor"
-                  class="form-input"
-                  placeholder="请输入车牌颜色"
-              >
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">方向</label>
-              <select v-model="formData.direction" class="form-select">
-                <option value="1">进站</option>
-                <option value="2">出站</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">工地类型</label>
-              <select v-model="formData.workType" class="form-select">
-                <option value="1">工地</option>
-                <option value="3">卸载点</option>
-              </select>
-            </div>
-
-            <div class="form-group full-width">
-              <label class="form-label">低位图片</label>
-              <div class="file-upload-area">
+          <div class="form-content">
+            <!-- 站点编码 -->
+            <div class="form-row">
+              <div class="form-item">
+                <label class="form-label">站点编码</label>
                 <input
-                    type="file"
-                    class="file-input"
-                    @change="onLowImageChange"
-                    accept="image/*"
+                    v-model="siteCode"
+                    class="form-input"
+                    placeholder="请输入站点编码"
+                    @blur="validateSiteCode"
                 >
-                <div class="file-placeholder" :class="{ 'has-file': lowImage }">
-                  <span v-if="!lowImage" class="file-text">点击选择低位图片</span>
-                  <span v-else class="file-text success">✓ {{ lowImage.name }}</span>
+                <div class="validation-message">
+                  <span v-if="siteCodeError" class="error-text">{{ siteCodeError }}</span>
+                  <span v-else-if="siteCodeValid" class="success-text">✓ 编码有效</span>
                 </div>
               </div>
             </div>
 
-            <div class="form-group full-width">
-              <label class="form-label">高位图片</label>
-              <div class="file-upload-area">
+            <!-- 车牌信息 -->
+            <div class="form-row">
+              <div class="form-item">
+                <label class="form-label">车牌号</label>
                 <input
-                    type="file"
-                    class="file-input"
-                    @change="onHighImageChange"
-                    accept="image/*"
+                    v-model="formData.plateNumber"
+                    class="form-input"
+                    placeholder="请输入车牌号"
                 >
-                <div class="file-placeholder" :class="{ 'has-file': highImage }">
-                  <span v-if="!highImage" class="file-text">点击选择高位图片</span>
-                  <span v-else class="file-text success">✓ {{ highImage.name }}</span>
+              </div>
+              <div class="form-item">
+                <label class="form-label">车牌颜色</label>
+                <input
+                    v-model="formData.plateNumColor"
+                    class="form-input"
+                    placeholder="请输入车牌颜色"
+                >
+              </div>
+            </div>
+
+            <!-- 方向选择 -->
+            <div class="form-row">
+              <div class="form-item">
+                <label class="form-label">方向</label>
+                <select v-model="formData.direction" class="form-select">
+                  <option value="1">进站</option>
+                  <option value="2">出站</option>
+                </select>
+              </div>
+              <div class="form-item">
+                <label class="form-label">工地类型</label>
+                <select v-model="formData.workType" class="form-select">
+                  <option value="1">工地</option>
+                  <option value="3">卸载点</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 图片上传 -->
+            <div class="form-row">
+              <div class="form-item full-width">
+                <label class="form-label">低位图片</label>
+                <div class="file-upload-area">
+                  <input
+                      type="file"
+                      class="file-input"
+                      @change="onLowImageChange"
+                      accept="image/*"
+                  >
+                  <div class="file-placeholder" :class="{ 'has-file': lowImage }">
+                    <span v-if="!lowImage" class="file-text">点击选择低位图片</span>
+                    <span v-else class="file-text success">✓ {{ lowImage.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-item full-width">
+                <label class="form-label">高位图片</label>
+                <div class="file-upload-area">
+                  <input
+                      type="file"
+                      class="file-input"
+                      @change="onHighImageChange"
+                      accept="image/*"
+                  >
+                  <div class="file-placeholder" :class="{ 'has-file': highImage }">
+                    <span v-if="!highImage" class="file-text">点击选择高位图片</span>
+                    <span v-else class="file-text success">✓ {{ highImage.name }}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <button
-              @click="createOrder"
-              :disabled="!siteCodeValid || loading"
-              class="submit-btn"
-          >
-            <span v-if="loading" class="loading-spinner">⏳</span>
-            {{ loading ? '处理中...' : '创建订单并上传图片' }}
-          </button>
+          <div class="submit-section">
+            <button
+                @click="createOrder"
+                :disabled="!siteCodeValid || loading"
+                class="submit-btn"
+            >
+              <span v-if="loading" class="loading-spinner">⏳</span>
+              {{ loading ? '处理中...' : '创建订单并上传图片' }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -128,7 +142,7 @@
 
           <div class="result-content">
             <div v-if="activeTab === 'order'" class="tab-panel">
-              <h3>创建订单结果</h3>
+              <h3 class="result-title">创建订单结果</h3>
               <div class="result-display">
                 <pre v-if="orderResult">{{ orderResult }}</pre>
                 <p v-else class="no-data">暂无订单结果</p>
@@ -136,7 +150,7 @@
             </div>
 
             <div v-if="activeTab === 'upload'" class="tab-panel">
-              <h3>上传图片结果</h3>
+              <h3 class="result-title">上传图片结果</h3>
               <div class="result-display">
                 <pre v-if="uploadResult">{{ uploadResult }}</pre>
                 <p v-else class="no-data">暂无上传结果</p>
@@ -293,8 +307,9 @@ const createOrder = async () => {
 <style scoped>
 .order-create {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
@@ -302,27 +317,29 @@ const createOrder = async () => {
   color: white;
   padding: 40px 20px;
   text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0 0 10px 0;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.5px;
 }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   opacity: 0.9;
   margin: 0;
+  font-weight: 300;
 }
 
 .main-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
-  max-width: 1400px;
-  margin: -40px auto 0;
+  max-width: 1200px;
+  margin: -30px auto 0;
   padding: 0 20px 40px;
   position: relative;
 }
@@ -338,31 +355,39 @@ const createOrder = async () => {
   padding: 30px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   height: fit-content;
+  border: 1px solid #e8ecef;
 }
 
 .section-title {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #2d3748;
+  color: #2c3e50;
   margin-bottom: 25px;
   padding-bottom: 15px;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid #eaeff2;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.form-group {
+.form-content {
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
-.form-group.full-width {
-  grid-column: 1 / -1;
+.form-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.form-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.form-item.full-width {
+  flex: 1 1 100%;
 }
 
 .form-label {
@@ -370,28 +395,30 @@ const createOrder = async () => {
   color: #4a5568;
   margin-bottom: 8px;
   font-size: 0.95rem;
+  display: block;
 }
 
 .form-input, .form-select {
   padding: 12px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border: 1px solid #d1d9e0;
+  border-radius: 6px;
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   background: white;
   width: 100%;
+  box-sizing: border-box;
 }
 
-/* 优化输入框焦点样式 */
+/* 精细化的焦点样式 */
 .form-input:focus, .form-select:focus {
   outline: none;
   border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
   border-width: 1px;
 }
 
 .form-input:hover, .form-select:hover {
-  border-color: #cbd5e0;
+  border-color: #a0aec0;
 }
 
 .form-select {
@@ -399,22 +426,25 @@ const createOrder = async () => {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
-  background-size: 16px;
+  background-size: 14px;
+  padding-right: 40px;
 }
 
 .validation-message {
   min-height: 20px;
-  margin-top: 5px;
+  margin-top: 6px;
 }
 
 .error-text {
   color: #e53e3e;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .success-text {
   color: #38a169;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .file-upload-area {
@@ -428,16 +458,22 @@ const createOrder = async () => {
   height: 100%;
   opacity: 0;
   cursor: pointer;
+  z-index: 2;
 }
 
 .file-placeholder {
-  padding: 16px;
+  padding: 14px 16px;
   border: 1px dashed #cbd5e0;
-  border-radius: 8px;
+  border-radius: 6px;
   text-align: center;
   color: #718096;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   background: #fafafa;
+  cursor: pointer;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .file-placeholder:hover {
@@ -451,12 +487,18 @@ const createOrder = async () => {
 }
 
 .file-text {
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .file-text.success {
   color: #48bb78;
-  font-weight: 500;
+}
+
+.submit-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eaeff2;
 }
 
 .submit-btn {
@@ -464,27 +506,29 @@ const createOrder = async () => {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 16px;
+  padding: 14px;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  letter-spacing: 0.5px;
 }
 
 .submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .submit-btn:not(:disabled):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
 }
 
 .loading-spinner {
@@ -501,40 +545,59 @@ const createOrder = async () => {
   display: flex;
   border-bottom: 1px solid #e2e8f0;
   margin-bottom: 20px;
+  background: #f8f9fa;
+  border-radius: 6px 6px 0 0;
+  padding: 4px;
 }
 
 .tab-btn {
-  padding: 12px 24px;
+  flex: 1;
+  padding: 12px 16px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #718096;
-  border-bottom: 3px solid transparent;
-  transition: all 0.3s ease;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .tab-btn.active {
+  background: white;
   color: #667eea;
-  border-bottom-color: #667eea;
-  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .tab-btn:hover {
   color: #667eea;
 }
 
-.tab-panel h3 {
-  font-size: 1.2rem;
+.result-content {
+  min-height: 300px;
+}
+
+.tab-panel {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result-title {
+  font-size: 1.1rem;
   color: #4a5568;
   margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .result-display {
   background: #f8f9fa;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 20px;
-  max-height: 400px;
+  max-height: 350px;
   overflow-y: auto;
   border: 1px solid #e9ecef;
 }
@@ -545,7 +608,8 @@ const createOrder = async () => {
   line-height: 1.5;
   white-space: pre-wrap;
   word-wrap: break-word;
-  font-family: 'Courier New', monospace;
+  font-family: 'Consolas', 'Monaco', monospace;
+  color: #2d3748;
 }
 
 .no-data {
@@ -553,34 +617,36 @@ const createOrder = async () => {
   font-style: italic;
   text-align: center;
   margin: 0;
-  padding: 40px 0;
+  padding: 60px 0;
+  font-size: 0.95rem;
 }
 
-/* 响应式设计 */
+/* 响应式设计 - 解决重叠问题 */
 @media (max-width: 1024px) {
   .main-container {
     grid-template-columns: 1fr;
-    gap: 20px;
-    margin-top: -20px;
+    gap: 25px;
+    margin-top: -25px;
+    max-width: 800px;
   }
 
-  .header {
-    padding: 30px 20px;
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
   }
 
-  .header h1 {
-    font-size: 2rem;
+  .form-item {
+    width: 100%;
   }
 }
 
 @media (max-width: 768px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+  .main-container {
+    padding: 0 15px 30px;
   }
 
-  .form-card, .result-card {
-    padding: 20px;
+  .header {
+    padding: 30px 15px;
   }
 
   .header h1 {
@@ -590,24 +656,10 @@ const createOrder = async () => {
   .subtitle {
     font-size: 1rem;
   }
-}
-
-@media (max-width: 480px) {
-  .main-container {
-    padding: 0 15px 20px;
-  }
-
-  .header {
-    padding: 25px 15px;
-  }
-
-  .header h1 {
-    font-size: 1.5rem;
-  }
 
   .form-card, .result-card {
-    padding: 15px;
-    border-radius: 8px;
+    padding: 25px 20px;
+    border-radius: 10px;
   }
 
   .section-title {
@@ -615,7 +667,34 @@ const createOrder = async () => {
   }
 }
 
-/* 滚动条样式 */
+@media (max-width: 480px) {
+  .header {
+    padding: 25px 12px;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .main-container {
+    padding: 0 12px 25px;
+  }
+
+  .form-card, .result-card {
+    padding: 20px 15px;
+    border-radius: 8px;
+  }
+
+  .form-content {
+    gap: 15px;
+  }
+
+  .form-row {
+    gap: 12px;
+  }
+}
+
+/* 滚动条优化 */
 .result-display::-webkit-scrollbar {
   width: 6px;
 }
@@ -632,5 +711,21 @@ const createOrder = async () => {
 
 .result-display::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* 防止文本溢出 */
+.form-input, .form-select, .file-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 确保布局稳定 */
+.form-item {
+  min-height: 80px;
+}
+
+.validation-message {
+  min-height: 20px;
 }
 </style>
