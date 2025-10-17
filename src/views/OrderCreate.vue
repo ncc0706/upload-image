@@ -374,17 +374,32 @@ const createOrder = async () => {
 
 .form-input, .form-select {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.3s ease;
   background: white;
+  width: 100%;
 }
 
+/* 优化输入框焦点样式 */
 .form-input:focus, .form-select:focus {
   outline: none;
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+  border-width: 1px;
+}
+
+.form-input:hover, .form-select:hover {
+  border-color: #cbd5e0;
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
 }
 
 .validation-message {
@@ -404,6 +419,7 @@ const createOrder = async () => {
 
 .file-upload-area {
   position: relative;
+  width: 100%;
 }
 
 .file-input {
@@ -415,8 +431,8 @@ const createOrder = async () => {
 }
 
 .file-placeholder {
-  padding: 20px;
-  border: 2px dashed #cbd5e0;
+  padding: 16px;
+  border: 1px dashed #cbd5e0;
   border-radius: 8px;
   text-align: center;
   color: #718096;
