@@ -1,21 +1,13 @@
 import type { CreateOrderRequest, UploadImageRequest, ApiResponse, SiteConfig } from '@/types/api'
-
-// 硬编码的站点配置
-const SITE_CONFIGS: SiteConfig[] = [
-    {
-        workSiteNo: 'GD202501038',
-        appKey: '40d91d71-af85-4477-8a60-48be23639ea9',
-        appSecret: 'CyCfOjjFixBjnU7apOlxluBUMSYKxvp4ZkgNzv3sp2m3v4sfT4DpYqBFEp51oyTq'
-    },
-    // 可以添加更多配置
-]
+import { findSiteConfigByCode } from '../config/siteConfigs'
 
 class ApiService {
+
     private currentConfig: SiteConfig | null = null
 
     // 根据编码查找配置
     findConfigByCode(workSiteNo: string): SiteConfig | undefined {
-        return SITE_CONFIGS.find(config => config.workSiteNo === workSiteNo)
+        return findSiteConfigByCode(workSiteNo)
     }
 
     // 设置当前配置
