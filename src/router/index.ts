@@ -5,6 +5,11 @@ const router = createRouter({
     routes: [
         {
             path: '/',
+            name: 'OrderCreate',
+            component: () => import('@/views/OrderCreate.vue')
+        },
+        {
+            path: '/home',
             name: 'home',
             component: () => import('@/views/Home.vue')
         },{
