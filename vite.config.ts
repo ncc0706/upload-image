@@ -9,5 +9,15 @@ export default defineConfig({
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
+    },
+    server: {
+        proxy: {
+            '/shcws': {
+                target: 'https://ets.lhsr.sh.gov.cn',
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path // 移除替换逻辑，保持原路径
+            }
+        }
     }
 })

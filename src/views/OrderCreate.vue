@@ -77,8 +77,9 @@
                       class="file-input"
                       @change="onLowImageChange"
                       accept="image/*"
+                      ref="lowImageInput"
                   >
-                  <div class="file-placeholder" :class="{ 'has-file': lowImage }">
+                  <div class="file-placeholder" :class="{ 'has-file': lowImage }" @click="triggerLowImageInput">
                     <span v-if="!lowImage" class="file-text">点击选择低位图片</span>
                     <span v-else class="file-text success">✓ {{ lowImage.name }}</span>
                   </div>
@@ -95,8 +96,9 @@
                       class="file-input"
                       @change="onHighImageChange"
                       accept="image/*"
+                      ref="highImageInput"
                   >
-                  <div class="file-placeholder" :class="{ 'has-file': highImage }">
+                  <div class="file-placeholder" :class="{ 'has-file': highImage }" @click="triggerHighImageInput">
                     <span v-if="!highImage" class="file-text">点击选择高位图片</span>
                     <span v-else class="file-text success">✓ {{ highImage.name }}</span>
                   </div>
@@ -172,6 +174,10 @@ const siteCodeError = ref('')
 const siteCodeValid = ref(false)
 const activeTab = ref('order')
 
+// 文件输入框的引用
+const lowImageInput = ref<HTMLInputElement>()
+const highImageInput = ref<HTMLInputElement>()
+
 const formData = ref({
   plateNumber: '沪FR1392',
   plateNumColor: '黄色',
@@ -202,14 +208,29 @@ const validateSiteCode = () => {
   }
 }
 
+// 触发文件选择器
+const triggerLowImageInput = () => {
+  lowImageInput.value?.click()
+}
+
+const triggerHighImageInput = () => {
+  highImageInput.value?.click()
+}
+
 const onLowImageChange = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
-  if (file) lowImage.value = file
+  if (file) {
+    lowImage.value = file
+    console.log('低位图片已选择:', file.name, file.size, file.type)
+  }
 }
 
 const onHighImageChange = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
-  if (file) highImage.value = file
+  if (file) {
+    highImage.value = file
+    console.log('高位图片已选择:', file.name, file.size, file.type)
+  }
 }
 
 const createOrder = async () => {
@@ -227,24 +248,31 @@ const createOrder = async () => {
     const currentTime = new Date().toISOString().replace('T', ' ').split('.')[0]
     const config = apiService.getCurrentConfig()
 
+    if (!config) {
+      throw new Error('站点配置获取失败')
+    }
+
     const orderData = {
       plateNumber: formData.value.plateNumber,
       doorNo: '1号门',
       platenumcolor: formData.value.plateNumColor,
       ...(formData.value.workType === '1' ? {
         outWorkSiteDate: currentTime,
-        workSiteNo: config?.workSiteNo,
+        workSiteNo: config.workSiteNo,
         dType: parseInt(formData.value.direction)
       } : {
         inDisposalDate: currentTime,
-        disposalNo: config?.workSiteNo
+        disposalNo: config.workSiteNo
       })
     }
+
+    console.log('创建订单请求数据:', orderData)
 
     const orderResponse = formData.value.workType === '1'
         ? await apiService.createOrder(orderData)
         : await apiService.consumeOrder(orderData)
 
+    console.log('创建订单响应:', orderResponse)
     orderResult.value = JSON.stringify(orderResponse, null, 2)
 
     if (orderResponse.code !== 200 || !orderResponse.data?.tbNo) {
@@ -252,11 +280,13 @@ const createOrder = async () => {
     }
 
     const tbNo = orderResponse.data.tbNo
+    console.log('订单号:', tbNo)
 
     // 上传图片
     const uploadPromises = []
 
     if (lowImage.value) {
+      console.log('开始上传低位图片...')
       uploadPromises.push(
           apiService.uploadImage({
             tbNo,
@@ -272,6 +302,7 @@ const createOrder = async () => {
     }
 
     if (highImage.value) {
+      console.log('开始上传高位图片...')
       uploadPromises.push(
           apiService.uploadImage({
             tbNo,
@@ -286,17 +317,24 @@ const createOrder = async () => {
       )
     }
 
-    const uploadResults = await Promise.all(uploadPromises)
-    uploadResult.value = uploadResults.map(result =>
-        `${result.location}图片上传结果:\n${JSON.stringify(result.response, null, 2)}`
-    ).join('\n\n')
+    if (uploadPromises.length > 0) {
+      console.log('等待图片上传完成...')
+      const uploadResults = await Promise.all(uploadPromises)
+      console.log('图片上传结果:', uploadResults)
+      uploadResult.value = uploadResults.map(result =>
+          `${result.location}图片上传结果:\n${JSON.stringify(result.response, null, 2)}`
+      ).join('\n\n')
+    } else {
+      uploadResult.value = '未选择图片，跳过上传步骤'
+    }
 
     // 如果有上传结果，切换到上传标签页
-    if (uploadResults.length > 0) {
+    if (uploadPromises.length > 0) {
       activeTab.value = 'upload'
     }
 
   } catch (error) {
+    console.error('操作失败:', error)
     orderResult.value = `错误: ${error instanceof Error ? error.message : '未知错误'}`
   } finally {
     loading.value = false
@@ -409,7 +447,6 @@ const createOrder = async () => {
   box-sizing: border-box;
 }
 
-/* 精细化的焦点样式 */
 .form-input:focus, .form-select:focus {
   outline: none;
   border-color: #667eea;
@@ -621,7 +658,7 @@ const createOrder = async () => {
   font-size: 0.95rem;
 }
 
-/* 响应式设计 - 解决重叠问题 */
+/* 响应式设计 */
 @media (max-width: 1024px) {
   .main-container {
     grid-template-columns: 1fr;

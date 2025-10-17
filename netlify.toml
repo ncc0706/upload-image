@@ -18,3 +18,12 @@ from = "/shcws/*"
 to = "https://ets.lhsr.sh.gov.cn/shcws/:splat"
 status = 200
 force = true
+
+# 处理 CORS 预检请求
+[[headers]]
+for = "/shcws/*"
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+Access-Control-Allow-Headers = "Content-Type, Authorization"
+

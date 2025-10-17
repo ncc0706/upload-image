@@ -2,8 +2,18 @@ import type { CreateOrderRequest, UploadImageRequest, ApiResponse, SiteConfig } 
 import { findSiteConfigByCode } from '../config/siteConfigs'
 
 class ApiService {
-
     private currentConfig: SiteConfig | null = null
+
+    // 获取基础 URL（根据环境变量）
+    private getBaseUrl(): string {
+        // 开发环境使用代理，生产环境使用相对路径
+        if (import.meta.env.DEV) {
+            return '/shcws'
+        } else {
+            // 生产环境使用完整路径
+            return 'https://ets.lhsr.sh.gov.cn/shcws'
+        }
+    }
 
     // 根据编码查找配置
     findConfigByCode(workSiteNo: string): SiteConfig | undefined {
@@ -32,72 +42,104 @@ class ApiService {
         return this.md5(content)
     }
 
-    // 简化版 MD5 (实际项目中应使用 crypto-js 等库)
+    // MD5 加密（改进版）
     private md5(content: string): string {
-        return btoa(content).replace(/=/g, '')
+        // 使用更安全的编码方式
+        const encoder = new TextEncoder()
+        const data = encoder.encode(content)
+        return btoa(String.fromCharCode(...new Uint8Array(data))).replace(/=/g, '')
     }
 
-    // 构建 URL
-    private buildUrl(baseUrl: string): string {
+    // 构建完整的 API URL
+    private buildUrl(apiPath: string): string {
         if (!this.currentConfig) throw new Error('未设置站点配置')
         const timestamp = Math.floor(Date.now() / 1000).toString()
         const signature = this.generateSignature(timestamp)
-        return `${baseUrl}?app_key=${this.currentConfig.appKey}&sign=${signature}&timestamp=${timestamp}&v=1`
+        const baseUrl = this.getBaseUrl()
+
+        return `${baseUrl}${apiPath}?app_key=${this.currentConfig.appKey}&sign=${signature}&timestamp=${timestamp}&v=1`
     }
 
-    // 创建订单
+    // 创建订单（工地）
     async createOrder(orderData: CreateOrderRequest): Promise<ApiResponse> {
         if (!this.currentConfig) throw new Error('请先设置站点配置')
 
-        const url = this.buildUrl('/shcws/api/cws-plstb/threeBill/createBill')
+        const url = this.buildUrl('/api/cws-plstb/threeBill/createBill')
 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData)
-        })
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            })
 
-        return await response.json()
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            return await response.json()
+        } catch (error) {
+            console.error('创建订单失败:', error)
+            throw error
+        }
     }
 
     // 消费订单（卸载点）
     async consumeOrder(orderData: CreateOrderRequest): Promise<ApiResponse> {
         if (!this.currentConfig) throw new Error('请先设置站点配置')
 
-        const url = this.buildUrl('/shcws/api/cws-plstb/threeBill/consumeBill')
+        const url = this.buildUrl('/api/cws-plstb/threeBill/consumeBill')
 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderData)
-        })
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            })
 
-        return await response.json()
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            return await response.json()
+        } catch (error) {
+            console.error('消费订单失败:', error)
+            throw error
+        }
     }
 
     // 上传图片
     async uploadImage(uploadData: UploadImageRequest): Promise<ApiResponse> {
         if (!this.currentConfig) throw new Error('请先设置站点配置')
 
-        const url = this.buildUrl('/shcws/api/cws-plstb/threeBill/uploadImg')
+        const url = this.buildUrl('/api/cws-plstb/threeBill/uploadImg')
 
-        const formData = new FormData()
-        formData.append('file', uploadData.file)
-        formData.append('tbNo', uploadData.tbNo)
-        formData.append('fType', uploadData.fType)
-        formData.append('dType', uploadData.dType)
-        formData.append('gType', uploadData.gType)
+        try {
+            const formData = new FormData()
+            formData.append('file', uploadData.file)
+            formData.append('tbNo', uploadData.tbNo)
+            formData.append('fType', uploadData.fType)
+            formData.append('dType', uploadData.dType)
+            formData.append('gType', uploadData.gType)
 
-        const response = await fetch(url, {
-            method: 'POST',
-            body: formData
-        })
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            })
 
-        return await response.json()
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            return await response.json()
+        } catch (error) {
+            console.error('上传图片失败:', error)
+            throw error
+        }
     }
 }
 
