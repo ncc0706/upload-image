@@ -9,10 +9,7 @@ publish = "dist"
 #status = 200
 #force = true
 
-#[[redirects]]
-#from = "/*"
-#to = "/index.html"
-#status = 200
+
 
 # https://upload-image-sh.netlify.app/shanhe/api/za/chouq.php
 # http://shanhe.kim/api/za/chouq.php
@@ -35,3 +32,7 @@ force = true
 #  Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
 #  Access-Control-Allow-Headers = "Content-Type, Authorization"
 
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
