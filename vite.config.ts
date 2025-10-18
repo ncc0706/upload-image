@@ -12,11 +12,11 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '/shcws': {
+            '/api': {
                 target: 'https://ets.lhsr.sh.gov.cn',
                 changeOrigin: true,
                 secure: false,
-                rewrite: (path) => path // 移除替换逻辑，保持原路径
+                rewrite: (path) => path.replace(/^\/api/, '')
             }
         }
     }
