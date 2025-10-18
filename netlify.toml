@@ -8,22 +8,22 @@ from = "/*"
 to = "/index.html"
 status = 200
 
-#[[redirects]]
-#from = "/api/proxy"
-#to = "/.netlify/functions/proxy"
-#status = 200
-#force = true
-
 [[redirects]]
-from = "/api/*"
-to = "https://ets.lhsr.sh.gov.cn/:splat"
+from = "/api/"
+to = "/.netlify/functions/proxy:splat"
 status = 200
 force = true
 
-[[headers]]
-for = "/api/*"
-[headers.values]
-  Access-Control-Allow-Origin = "*"
-  Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-  Access-Control-Allow-Headers = "Content-Type, Authorization"
+#[[redirects]]
+#from = "/api/*"
+#to = "https://ets.lhsr.sh.gov.cn/:splat"
+#status = 200
+#force = true
+#
+#[[headers]]
+#for = "/api/*"
+#[headers.values]
+#  Access-Control-Allow-Origin = "*"
+#  Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+#  Access-Control-Allow-Headers = "Content-Type, Authorization"
 
