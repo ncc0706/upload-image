@@ -1,13 +1,13 @@
 [build]
 command = "npm run build"
 publish = "dist"
-#functions = "netlify/functions"
-#
-#[[redirects]]
-#from = "/proxy/"
-#to = "/.netlify/functions/proxy:splat"
-#status = 200
-#force = true
+functions = "netlify/functions"
+
+[[redirects]]
+from = "/proxy/"
+to = "/.netlify/functions/proxy:splat"
+status = 200
+force = true
 
 
 
@@ -19,11 +19,11 @@ to = "http://shanhe.kim/:splat"
 status = 200
 force = true
 
-#[[redirects]]
-#from = "/api/*"
-#to = "https://ets.lhsr.sh.gov.cn/:splat"
-#status = 200
-#force = true
+[[redirects]]
+from = "/shcws/*"
+to = "https://ets.lhsr.sh.gov.cn/:splat"
+status = 200
+force = true
 #
 #[[headers]]
 #for = "/api/*"

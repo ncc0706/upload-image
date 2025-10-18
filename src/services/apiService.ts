@@ -6,7 +6,7 @@ class ApiService {
 
     // 基础URL仍为 /api（匹配Netlify代理规则）
     private getBaseUrl(): string {
-        return '/api'
+        return '/shcws'
     }
 
     // 其他辅助方法（查找配置、设置配置等）保持不变
